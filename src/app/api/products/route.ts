@@ -98,9 +98,7 @@ export async function GET(req: NextRequest) {
 
   const userAnswers = parseQueryParams(searchParams);
 
-  const products: Product[] = await getStages(
-    searchParams.get('lang') == 'en' ? 1 : 0
-  );
+  const products: Product[] = await getStages(1);
   // console.log(products, 'Products');
 
   const matchingProducts = products.filter((product) =>

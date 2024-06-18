@@ -5,7 +5,7 @@ import TreatmentStage, {
   TreatmentStageInterface,
 } from '@/widgets/treatment-stage';
 // import LastBlock, {LastBlockInterface} from '@/widgets/last-block';
-import { getAnamnes } from '@/shared/utils/getAnamnes';
+// import { getAnamnes } from '@/shared/utils/getAnamnes';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import LoadingIcon from '../../loading.svg';
@@ -26,12 +26,8 @@ export default function Home() {
       const queryParams = new URLSearchParams(
         searchParams.toString()
       ).toString();
-      const localeTemp = searchParams.get('lang') ?? 'ru';
-      setAnamnes(
-        localeTemp == 'ru'
-          ? getAnamnes(searchParams.get('1.2.6.1') ?? '2')
-          : getAnamnesEn(searchParams.get('1.2.6.1') ?? '2')
-      );
+      const localeTemp = 'en';
+      setAnamnes(getAnamnesEn(searchParams.get('1.2.6.1') ?? '2'));
       setLocale(localeTemp);
       const res = await fetch(`/api/products?${queryParams}`);
       const data = await res.json();
