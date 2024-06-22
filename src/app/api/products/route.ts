@@ -92,13 +92,28 @@ const groupByStage = (products: Product[]) => {
   return Object.values(grouped);
 };
 
+const getSheetIdByLang = (lang: 'en' | 'fr' | null | string) => {
+  switch (lang) {
+    case 'ru':
+      return 0;
+    case 'en':
+      return 1;
+    case 'fr':
+      return 3;
+    default:
+      return 1;
+  }
+};
+
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   console.log(searchParams.toString(), 'SearchParams');
 
   const userAnswers = parseQueryParams(searchParams);
 
-  const products: Product[] = await getStages(1);
+  const products: Product[] = await getStages(
+    Number(getSheetIdByLang(searchParams.get('lang')))
+  );
   // console.log(products, 'Products');
 
   const matchingProducts = products.filter((product) =>

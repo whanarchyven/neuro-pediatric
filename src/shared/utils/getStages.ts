@@ -1,7 +1,7 @@
 // shared/utils/getStages.ts
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 
-export const getStages = async (listIndex: 1 | 0) => {
+export const getStages = async (listIndex: number) => {
   const doc = new GoogleSpreadsheet(
     '1KNqlgf-Mmyb_gYnK-_c7GebI2ifgUoAJ_zytg43wUM4',
     { apiKey: process.env.GOOGLE_API_KEY ?? '' }

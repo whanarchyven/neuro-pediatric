@@ -9,7 +9,7 @@ import TreatmentStage, {
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import LoadingIcon from '../../loading.svg';
-import { getAnamnesEn } from '@/shared/utils/getAnamnesEn';
+import { getAnamnes } from '@/shared/utils/getAnamnes';
 // import generatePDF, { Resolution, Options } from 'react-to-pdf';
 
 export default function Home() {
@@ -26,8 +26,8 @@ export default function Home() {
       const queryParams = new URLSearchParams(
         searchParams.toString()
       ).toString();
-      const localeTemp = 'en';
-      setAnamnes(getAnamnesEn(searchParams.get('1.2.6.1') ?? '2'));
+      const localeTemp = searchParams.get('lang') ?? 'en';
+      setAnamnes(getAnamnes(searchParams.get('1.2.6.1') ?? '2', localeTemp));
       setLocale(localeTemp);
       const res = await fetch(`/api/products?${queryParams}`);
       const data = await res.json();
@@ -106,6 +106,45 @@ export default function Home() {
     treatmentStages: [],
   };
 
+  const frData: {
+    mainBlock: MainBlockInterface;
+    treatmentStages: TreatmentStageInterface[];
+  } = {
+    mainBlock: {
+      title: 'Programme de Soin Personnel de la Peau',
+      description:
+        '**Une prescription** numérique est votre guide personnel pour une peau saine.\n' +
+        '\n' +
+        'Créée spécialement pour vous, elle prend en compte toutes les caractéristiques de votre type de peau, vos besoins individuels et vos préférences.\n' +
+        '\n' +
+        'Grâce à elle, vous recevrez des recommandations précises pour les soins et les traitements, toujours disponibles sur votre smartphone ou votre ordinateur.\n',
+      tiles: [
+        {
+          title: 'Anamnesis:',
+          description: anamnes,
+          icon: '/icons/profile.png',
+        },
+        {
+          description:
+            "Vous avez besoin d'une consultation avec un dermatologue pour prescrire et/ou ajuster le traitement médicamenteux.",
+          icon: '/icons/consultation.png',
+          isActive: true,
+        },
+        {
+          description:
+            'Pour soulager la peau de votre bébé et prévenir les irritations, suivez les recommandations des blocs suivants.',
+          icon: '/icons/tablets.png',
+        },
+      ],
+    },
+    treatmentStages: [],
+  };
+
+  const langs = new Map();
+  langs.set('ru', data);
+  langs.set('en', enData);
+  langs.set('fr', frData);
+
   // const options: Options = {
   //   filename: 'receipt.pdf',
   //   // default is `save`
@@ -169,13 +208,9 @@ export default function Home() {
         )}
 
         <MainBlock
-          description={
-            locale == 'ru'
-              ? data.mainBlock.description
-              : enData.mainBlock.description
-          }
-          title={locale == 'ru' ? data.mainBlock.title : enData.mainBlock.title}
-          tiles={locale == 'ru' ? data.mainBlock.tiles : enData.mainBlock.tiles}
+          description={langs.get(locale).mainBlock.description}
+          title={langs.get(locale).mainBlock.title}
+          tiles={langs.get(locale).mainBlock.tiles}
         />
         <div className={'flex treatment sm:px-10 p-2 flex-col gap-2'}>
           {products.map((stage: any, index: number) => {
